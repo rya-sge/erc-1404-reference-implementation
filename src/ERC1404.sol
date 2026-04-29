@@ -76,7 +76,11 @@ contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
 
     /// @notice Returns a restriction code for the proposed transfer, or 0 if unrestricted.
     /// @dev `value` is unused in this implementation; override to add amount-based restrictions.
-    function detectTransferRestriction(address from, address to, uint256 /*value*/ )
+    function detectTransferRestriction(
+        address from,
+        address to,
+        uint256 /*value*/
+    )
         public
         view
         override
