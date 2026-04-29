@@ -13,6 +13,7 @@ import {IERC1404} from "./IERC1404.sol";
 ///   0  No restriction
 ///   1  Sender not whitelisted
 ///   2  Recipient not whitelisted
+/// Restriction codes 1 and 2 are not include in ERC-1404
 contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
     uint8 public constant TRANSFER_OK = 0;
     uint8 public constant SENDER_NOT_WHITELISTED = 1;

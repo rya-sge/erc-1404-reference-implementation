@@ -1,6 +1,9 @@
 # ERC-1404 Reference Implementation
 
-A minimal, auditable reference implementation of [EIP-1404](https://eips.ethereum.org/EIPS/eip-1404) — Simple Restricted Token Standard — built with Foundry and OpenZeppelin Contracts v5.
+> [!WARNING]
+> **This project has not been audited.** It is provided solely to illustrate an example implementation of ERC-1404. Do not use in production without a thorough independent security review.
+
+A minimal, auditable reference implementation of [EIP-1404](https://eips.ethereum.org/EIPS/eip-1404) — Simple Restricted Token Standard — built with Foundry and OpenZeppelin Contracts v5.6.1.
 
 ## Overview
 
@@ -78,6 +81,17 @@ This is a minimal reference implementation. The following are known constraints 
 - **Ownership transfer is immediate.** `transferOwnership` takes effect in a single transaction. Transferring to a wrong address is not recoverable. Consider `Ownable2Step` for production use.
 - **`value` is not used in restriction logic.** `detectTransferRestriction` ignores the token amount. Amount-based restrictions (transfer limits, lock-up thresholds) require subclassing and overriding that function.
 - **No upgrade path.** The whitelist policy is hardcoded. Changing restriction logic requires deploying a new contract and migrating token holders.
+
+## Static Analysis
+
+This repository includes an [Aderyn](https://github.com/Cyfrin/aderyn) static analysis report generated against the current source:
+
+| Report | Feedback |
+|--------|----------|
+| [`doc/aderyn-report.md`](doc/aderyn-report.md) | Raw output from Aderyn |
+| [`doc/aderyn-feedback.md`](doc/aderyn-feedback.md) | Triage and verdict for each finding |
+
+Summary of findings: 1 high, 4 low — all are either false positives or acknowledged by-design behaviours. See the feedback document for details.
 
 ## License
 
