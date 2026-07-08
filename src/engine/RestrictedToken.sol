@@ -33,13 +33,13 @@ contract RestrictedToken is ERC20, Ownable {
 
     /**
      * @notice Deploys the token, binds it to `rules_` and mints the initial supply to the deployer.
-     * @param name Token name.
-     * @param symbol Token symbol.
+     * @param name_ Token name.
+     * @param symbol_ Token symbol.
      * @param initialSupply Amount minted to the deployer at construction.
      * @param rules_ Compliance engine consulted on every holder-to-holder transfer.
      */
-    constructor(string memory name, string memory symbol, uint256 initialSupply, IERC1404Restriction rules_)
-        ERC20(name, symbol)
+    constructor(string memory name_, string memory symbol_, uint256 initialSupply, IERC1404Restriction rules_)
+        ERC20(name_, symbol_)
         Ownable(msg.sender)
     {
         if (address(rules_) == address(0)) revert EngineAddressZero();

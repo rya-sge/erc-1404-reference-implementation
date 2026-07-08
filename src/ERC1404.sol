@@ -77,12 +77,12 @@ contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
 
     /**
      * @notice Deploys the token, whitelists the deployer and mints the initial supply to it.
-     * @param name Token name.
-     * @param symbol Token symbol.
+     * @param name_ Token name.
+     * @param symbol_ Token symbol.
      * @param initialSupply Amount minted to the deployer at construction.
      */
-    constructor(string memory name, string memory symbol, uint256 initialSupply)
-        ERC20(name, symbol)
+    constructor(string memory name_, string memory symbol_, uint256 initialSupply)
+        ERC20(name_, symbol_)
         Ownable(msg.sender)
     {
         whitelist[msg.sender] = true;
