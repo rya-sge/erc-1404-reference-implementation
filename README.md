@@ -98,14 +98,24 @@ This is a minimal reference implementation. The following are known constraints 
 
 ## Static Analysis
 
-This repository includes an [Aderyn](https://github.com/Cyfrin/aderyn) static analysis report generated against the current source:
+This repository is analyzed with both [Slither](https://github.com/crytic/slither) and [Aderyn](https://github.com/Cyfrin/aderyn). The full reports and per-finding triage live in [`doc/`](doc/).
 
-| Report | Feedback |
-|--------|----------|
-| [`doc/aderyn-report.md`](doc/aderyn-report.md) | Raw output from Aderyn |
-| [`doc/aderyn-feedback.md`](doc/aderyn-feedback.md) | Triage and verdict for each finding |
+Analysis (mocks excluded):
 
-Summary of findings: 1 high, 4 low — all are either false positives or acknowledged by-design behaviours. See the feedback document for details.
+| Tool | Report | Feedback | High / Med / Low / Info |
+|------|--------|----------|-------------------------|
+| Slither `0.11.5` | [`slither-report.md`](doc/slither-report.md) | [`slither-feedback.md`](doc/slither-feedback.md) | 0 / 0 / 0 / 5 |
+| Aderyn `0.6.5` | [`aderyn-report.md`](doc/aderyn-report.md) | [`aderyn-feedback.md`](doc/aderyn-feedback.md) | 1 / 0 / 4 / 0 |
+
+**Result: nothing to fix** — every finding is a false positive, dependency-driven informational, or an intentional by-design property of a permissioned ERC-1404 token. See the feedback files for the per-finding reasoning.
+
+Reproduce:
+
+```bash
+slither . --checklist --filter-paths "node_modules,submodules,test,forge-std,mocks" \
+  > doc/slither-report.md
+aderyn -x mocks --output doc/aderyn-report.md
+```
 
 ## License
 
