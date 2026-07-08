@@ -20,10 +20,24 @@ A return value of `0` from `detectTransferRestriction` means the transfer is unr
 
 ## Contracts
 
+This repository ships **two** worked examples of the standard:
+
+**Example 1 — ERC-1404 baked into the token** (the classic ERC-20 extension):
+
 | File | Description |
 |------|-------------|
 | `src/IERC1404.sol` | Interface — extends `IERC20` with the two ERC-1404 functions |
 | `src/ERC1404.sol` | Concrete implementation — whitelist-based, with ERC-165 support |
+
+**Example 2 — ERC-1404 as a standalone rule engine bound to an ERC-20** (see [`EXAMPLE_ERC_1404.md`](EXAMPLE_ERC_1404.md)):
+
+| File | Description |
+|------|-------------|
+| `src/engine/IERC1404Restriction.sol` | Token-agnostic interface — the two ERC-1404 functions only, no `IERC20` |
+| `src/engine/WhitelistRuleEngine.sol` | Standalone compliance engine — implements the restriction logic, holds no balances |
+| `src/engine/RestrictedToken.sol` | Thin ERC-20 that consults the engine in its `_update` hook |
+
+In Example 2 the restriction logic lives in a separate contract that the token consults before moving funds. This lets one rule set be reused across several tokens and lets compliance rules be swapped without redeploying the token. The engine never moves or holds tokens — it only answers "is this transfer allowed?".
 
 ### Restriction codes
 

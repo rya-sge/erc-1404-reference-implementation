@@ -15,12 +15,29 @@ import {IERC1404Restriction} from "./IERC1404Restriction.sol";
 /// The engine is consulted in `_update`, the single chokepoint OpenZeppelin's
 /// ERC-20 routes `transfer`, `transferFrom`, `_mint` and `_burn` through.
 contract RestrictedToken is ERC20, Ownable {
-    /// @notice The external compliance engine consulted on every holder-to-holder transfer.
+    /**
+     * @notice The external compliance engine consulted on every holder-to-holder transfer.
+     */
     IERC1404Restriction public immutable rules;
 
+    /**
+     * @notice Thrown when a transfer is blocked by the engine's restriction policy.
+     * @param code Restriction code returned by the engine.
+     * @param message Human-readable explanation of the restriction.
+     */
     error TransferRestricted(uint8 code, string message);
+    /**
+     * @notice Thrown when the engine address supplied at construction is the zero address.
+     */
     error EngineAddressZero();
 
+    /**
+     * @notice Deploys the token, binds it to `rules_` and mints the initial supply to the deployer.
+     * @param name Token name.
+     * @param symbol Token symbol.
+     * @param initialSupply Amount minted to the deployer at construction.
+     * @param rules_ Compliance engine consulted on every holder-to-holder transfer.
+     */
     constructor(string memory name, string memory symbol, uint256 initialSupply, IERC1404Restriction rules_)
         ERC20(name, symbol)
         Ownable(msg.sender)
@@ -32,12 +49,20 @@ contract RestrictedToken is ERC20, Ownable {
         _mint(msg.sender, initialSupply);
     }
 
-    /// @notice Mint `amount` new tokens to `to`. Subject to the engine's recipient rule.
+    /**
+     * @notice Mint `amount` new tokens to `to`. Subject to the engine's recipient rule.
+     * @param to Recipient of the newly minted tokens.
+     * @param amount Amount of tokens to mint.
+     */
     function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
 
-    /// @notice Burn `amount` tokens held by `from`. Subject to the engine's sender rule.
+    /**
+     * @notice Burn `amount` tokens held by `from`. Subject to the engine's sender rule.
+     * @param from Holder whose tokens are burned.
+     * @param amount Amount of tokens to burn.
+     */
     function burn(address from, uint256 amount) external onlyOwner {
         _burn(from, amount);
     }
@@ -46,10 +71,16 @@ contract RestrictedToken is ERC20, Ownable {
     // ERC-20 hook — consult the engine on every transfer path
     // -------------------------------------------------------------------------
 
-    /// @dev `_update` is the single chokepoint for transfer, transferFrom, mint and burn.
-    ///      Only holder-to-holder transfers are gated; mint (`from == 0`) and burn
-    ///      (`to == 0`) legs are skipped so issuance/redemption is not blocked by the
-    ///      whitelist. Remove the zero-address guard if your policy must gate them too.
+    /**
+     * @notice Enforces the engine's restriction on every holder-to-holder transfer.
+     * @dev `_update` is the single chokepoint for transfer, transferFrom, mint and burn.
+     *      Only holder-to-holder transfers are gated; mint (`from == 0`) and burn
+     *      (`to == 0`) legs are skipped so issuance/redemption is not blocked by the
+     *      whitelist. Remove the zero-address guard if your policy must gate them too.
+     * @param from Sender address, or the zero address on mint.
+     * @param to Recipient address, or the zero address on burn.
+     * @param value Token amount being moved.
+     */
     function _update(address from, address to, uint256 value) internal override {
         if (from != address(0) && to != address(0)) {
             uint8 code = rules.detectTransferRestriction(from, to, value);

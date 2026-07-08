@@ -7,6 +7,9 @@ import {RestrictedToken} from "../src/engine/RestrictedToken.sol";
 
 /// @notice Deploys a standalone `WhitelistRuleEngine` and a `RestrictedToken` bound to it.
 contract WhitelistRuleEngineScript is Script {
+    /**
+     * @notice Broadcasts the deployment of the engine and a token bound to it, logging both addresses.
+     */
     function run() public {
         string memory name = vm.envString("TOKEN_NAME");
         string memory symbol = vm.envString("TOKEN_SYMBOL");
