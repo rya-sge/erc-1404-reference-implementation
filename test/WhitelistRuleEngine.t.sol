@@ -159,6 +159,7 @@ contract WhitelistRuleEngineTest is Test {
         );
         vm.expectRevert(expected);
         vm.prank(stranger);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transfer(bob, 1e18);
     }
 
@@ -174,6 +175,7 @@ contract WhitelistRuleEngineTest is Test {
                 engine.MESSAGE_RECIPIENT_NOT_WHITELISTED()
             )
         );
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transfer(bob, 1e18);
     }
 
@@ -210,6 +212,7 @@ contract WhitelistRuleEngineTest is Test {
                 engine.MESSAGE_RECIPIENT_NOT_WHITELISTED()
             )
         );
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transferFrom(alice, bob, 1e18);
     }
 

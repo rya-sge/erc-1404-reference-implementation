@@ -93,6 +93,7 @@ contract ERC1404Test is Test {
 
         vm.prank(stranger);
         vm.expectRevert();
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transfer(bob, 1e18);
     }
 
@@ -102,6 +103,7 @@ contract ERC1404Test is Test {
     function test_transferRevertsWhenRecipientNotWhitelisted() public {
         // owner is whitelisted by construction; bob is not
         vm.expectRevert();
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transfer(bob, 1e18);
     }
 
@@ -134,6 +136,7 @@ contract ERC1404Test is Test {
 
         vm.prank(bob);
         vm.expectRevert();
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transferFrom(alice, bob, 1e18);
     }
 
@@ -148,6 +151,7 @@ contract ERC1404Test is Test {
         token.approve(owner, 100e18);
 
         vm.expectRevert();
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transferFrom(alice, bob, 1e18);
     }
 
@@ -191,6 +195,7 @@ contract ERC1404Test is Test {
     function test_ownerTransferBlockedAfterRemoval() public {
         token.setWhitelisted(owner, false);
         vm.expectRevert();
+        // forge-lint: disable-next-line(erc20-unchecked-transfer) — call is expected to revert
         token.transfer(alice, 1e18);
     }
 
