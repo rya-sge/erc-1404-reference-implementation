@@ -135,7 +135,7 @@ contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
     /**
      * @inheritdoc IERC20
      */
-    function transfer(address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
+    function transfer(address to, uint256 value) public virtual override(ERC20, IERC20) returns (bool) {
         _checkRestriction(msg.sender, to, value);
         return super.transfer(to, value);
     }
@@ -143,7 +143,7 @@ contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
     /**
      * @inheritdoc IERC20
      */
-    function transferFrom(address from, address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
+    function transferFrom(address from, address to, uint256 value) public virtual override(ERC20, IERC20) returns (bool) {
         _checkRestriction(from, to, value);
         return super.transferFrom(from, to, value);
     }
@@ -166,6 +166,7 @@ contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
     )
         public
         view
+        virtual
         override
         returns (uint8)
     {
@@ -179,7 +180,7 @@ contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
      * @param restrictionCode Code returned by `detectTransferRestriction`.
      * @return Human-readable description of the restriction.
      */
-    function messageForTransferRestriction(uint8 restrictionCode) public pure override returns (string memory) {
+    function messageForTransferRestriction(uint8 restrictionCode) public pure virtual override returns (string memory) {
         if (restrictionCode == TRANSFER_OK) return MESSAGE_TRANSFER_OK;
         if (restrictionCode == SENDER_NOT_WHITELISTED) return MESSAGE_SENDER_NOT_WHITELISTED;
         if (restrictionCode == RECIPIENT_NOT_WHITELISTED) return MESSAGE_RECIPIENT_NOT_WHITELISTED;
@@ -195,7 +196,7 @@ contract ERC1404 is ERC20, ERC165, Ownable, IERC1404 {
      * @param interfaceId Interface identifier, as defined in ERC-165.
      * @return True if the interface is supported.
      */
-    function supportsInterface(bytes4 interfaceId) public view override(ERC165) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165) returns (bool) {
         return interfaceId == _INTERFACE_ID_ERC1404 || super.supportsInterface(interfaceId);
     }
 
