@@ -36,8 +36,10 @@ contract ERC1404SpenderAware is ERC1404, IERC1404SpenderAware {
      * @dev bytes4(keccak256("detectTransferRestriction(address,address,uint256)"))
      *   XOR bytes4(keccak256("messageForTransferRestriction(uint8)"))
      *   XOR bytes4(keccak256("detectTransferRestrictionFrom(address,address,address,uint256)"))
-     *   The three-selector value is hardcoded on purpose; deriving it from the interface type would
-     *   cover only `detectTransferRestrictionFrom` and MUST NOT be used (see EIP-1404 Specification).
+     *   The three-selector value is hardcoded on purpose. `type(IERC1404SpenderAware).interfaceId`
+     *   covers only the directly declared `detectTransferRestrictionFrom` (Solidity excludes inherited
+     *   selectors), so it does not equal this id. The exclusive-or is recomputed and pinned by
+     *   `test_extensionIdIsXorOfThreeSelectors` in ERC1404SpenderAware.t.sol.
      */
     bytes4 private constant _INTERFACE_ID_ERC1404_SPENDER_AWARE = 0x78a8de7d;
 
@@ -80,8 +82,9 @@ contract ERC1404SpenderAware is ERC1404, IERC1404SpenderAware {
     /**
      * @notice Returns a restriction code for a delegated transfer initiated by `spender`, or 0 if unrestricted.
      * @dev Reuses the base `from`/`to` policy and layers the spender check on top. When `spender == from`
-     *      the spender check is skipped, so the result equals `detectTransferRestriction(from, to, value)`,
-     *      as required by EIP-1404.
+     *      the spender check is skipped: this is a safe optimization here because a whitelisted `from`
+     *      already implies a whitelisted spender, so the result coincides with
+     *      `detectTransferRestriction(from, to, value)` without diverging from `transferFrom` enforcement.
      * @param spender Address initiating the delegated transfer (the `transferFrom` caller).
      * @param from Address the tokens are debited from.
      * @param to Recipient address.

@@ -10,12 +10,16 @@ import {IERC1404} from "./IERC1404.sol";
 ///         the spender and therefore cannot express spender-specific restrictions.
 /// @dev The ERC-165 identifier for this extension is `0x78a8de7d`, the exclusive-or of the selectors
 ///      of all three methods (`detectTransferRestriction`, `messageForTransferRestriction`,
-///      `detectTransferRestrictionFrom`). It MUST be hardcoded: `type(IERC1404SpenderAware).interfaceId`
-///      would cover only the single declared method and MUST NOT be used for this purpose.
+///      `detectTransferRestrictionFrom`). It is the explicit exclusive-or of those three selectors and is
+///      hardcoded in the implementation; `type(IERC1404SpenderAware).interfaceId` covers only the directly
+///      declared `detectTransferRestrictionFrom` (Solidity excludes inherited selectors) and does not equal it.
 interface IERC1404SpenderAware is IERC1404 {
     /// @notice Returns a restriction code for a delegated transfer initiated by `spender`, or 0 if unrestricted.
     /// @dev Shares the restriction code space and `messageForTransferRestriction` lookup with the base method.
-    ///      When `spender == from`, MUST return the same code as `detectTransferRestriction(from, to, value)`.
+    ///      Consistency with delegated-transfer enforcement is the only invariant EIP-1404 requires. The
+    ///      `spender == from` case SHOULD be evaluated through the spender-aware path; an implementation MAY
+    ///      instead collapse it to `detectTransferRestriction(from, to, value)` only when its policy does not
+    ///      restrict operator identity beyond ownership, so the two are observably equivalent.
     /// @param spender Address initiating the delegated transfer (the `transferFrom` caller).
     /// @param from    Address the tokens are debited from.
     /// @param to      Recipient address.
